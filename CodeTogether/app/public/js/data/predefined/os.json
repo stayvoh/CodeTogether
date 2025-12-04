@@ -1,0 +1,17 @@
+[
+  { "id": 1, "term": "Process", "definition": "An instance of a running program managed by the operating system." },
+  { "id": 2, "term": "Thread", "definition": "The smallest unit of execution within a process that can run concurrently." },
+  { "id": 3, "term": "Scheduling", "definition": "The OS method for deciding which process or thread gets to use the CPU next." },
+  { "id": 4, "term": "Context Switch", "definition": "The act of saving and restoring CPU state when switching between processes or threads." },
+  { "id": 5, "term": "Deadlock", "definition": "A situation where processes are stuck waiting on each other, and none can proceed." },
+  { "id": 6, "term": "Semaphore", "definition": "A synchronization mechanism used to control access to shared resources." },
+  { "id": 7, "term": "Virtual Memory", "definition": "A memory management technique that gives an application the illusion of having a large, continuous block of memory." },
+  { "id": 8, "term": "Paging", "definition": "A virtual memory system that divides memory into fixed-size blocks called pages." },
+  { "id": 9, "term": "Kernel", "definition": "The core part of an OS that manages hardware, resources, and low-level operations." },
+  { "id": 10, "term": "System Call", "definition": "A request from user-level code to the OS kernel for a service." },
+  { "id": 11, "term": "Interrupt", "definition": "A signal to the processor indicating an event that requires immediate attention." },
+  { "id": 12, "term": "File System", "definition": "The OS component responsible for organizing and storing files on disks." },
+  { "id": 13, "term": "I/O Buffering", "definition": "Temporarily storing data during input/output operations to improve efficiency." },
+  { "id": 14, "term": "Swapping", "definition": "Moving processes between main memory and disk to free RAM." },
+  { "id": 15, "term": "Privilege Level", "definition": "Different execution modes (like user mode and kernel mode) that control access to hardware and memory." }
+]

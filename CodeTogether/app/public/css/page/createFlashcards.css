@@ -1,0 +1,15 @@
+.card-row {
+    position: relative;
+}
+
+.remove-card {
+    cursor: pointer;
+    color: #ff4d4d;
+    font-weight: bold;
+    float: right;
+    display: none;
+}
+
+.card-row:hover .remove-card {
+    display: inline;
+}

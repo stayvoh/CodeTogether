@@ -1,0 +1,17 @@
+[
+  { "id": 1, "term": "Boolean", "definition": "A data type having only two possible values, typically true or false (0 or 1)." },
+  { "id": 2, "term": "Algorithm", "definition": "A finite sequence of well-defined, computer-implementable instructions to solve a class of problems." },
+  { "id": 3, "term": "Recursion", "definition": "A process in which a function or procedure calls itself, either directly or indirectly." },
+  { "id": 4, "term": "Syntax", "definition": "The set of rules that defines how a program or script is written and structured in a programming language." },
+  { "id": 5, "term": "Compile", "definition": "To translate source code written in a high-level language into machine code or bytecode." },
+  { "id": 6, "term": "API", "definition": "A set of functions and procedures that allow the creation of applications accessing features or data of an operating system, application, or other service." },
+  { "id": 7, "term": "Framework", "definition": "A platform for developing software applications that provides a foundation on which software developers can build programs for a specific platform." },
+  { "id": 8, "term": "Object-Oriented Programming", "definition": "A programming paradigm based on the concept of 'objects', which can contain data and code to manipulate that data." },
+  { "id": 9, "term": "Database", "definition": "An organized collection of data, generally stored and accessed electronically from a computer system." },
+  { "id": 10, "term": "Version Control", "definition": "A system that records changes to a file or set of files over time so that specific versions can be recalled later." },
+  { "id": 11, "term": "Encapsulation", "definition": "The bundling of data with the methods that operate on that data, restricting direct access to some of the object's components." },
+  { "id": 12, "term": "Inheritance", "definition": "A mechanism in object-oriented programming that allows a new class to inherit properties and behavior from an existing class." },
+  { "id": 13, "term": "Polymorphism", "definition": "The ability of different classes to be treated as instances of the same class through a common interface, typically by overriding methods." },
+  { "id": 14, "term": "Asynchronous Programming", "definition": "A programming paradigm allowing non-blocking operations so tasks can run concurrently without waiting." },
+  { "id": 15, "term": "Lambda Function", "definition": "A small anonymous function often used for short, inline operations." }
+]
