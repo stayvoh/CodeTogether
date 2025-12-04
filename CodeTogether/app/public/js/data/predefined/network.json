@@ -1,0 +1,17 @@
+[
+  { "id": 1, "term": "IP Address", "definition": "A numerical label identifying devices on a network." },
+  { "id": 2, "term": "MAC Address", "definition": "A unique hardware identifier assigned to a network interface card." },
+  { "id": 3, "term": "Protocol", "definition": "A set of rules enabling communication between devices on a network." },
+  { "id": 4, "term": "TCP", "definition": "A reliable connection-oriented protocol ensuring delivered and ordered data." },
+  { "id": 5, "term": "UDP", "definition": "A fast, connectionless protocol that does not guarantee delivery or order." },
+  { "id": 6, "term": "DNS", "definition": "A system that translates domain names into IP addresses." },
+  { "id": 7, "term": "DHCP", "definition": "A protocol that automatically assigns IP addresses to devices." },
+  { "id": 8, "term": "Router", "definition": "A device that forwards data packets between networks." },
+  { "id": 9, "term": "Switch", "definition": "A device that connects devices on the same network and forwards traffic based on MAC address." },
+  { "id": 10, "term": "Firewall", "definition": "A network security system that filters incoming and outgoing traffic." },
+  { "id": 11, "term": "Subnet", "definition": "A subdivided portion of a network used to organize and secure devices." },
+  { "id": 12, "term": "LAN", "definition": "A local area network connecting devices within a limited area." },
+  { "id": 13, "term": "WAN", "definition": "A wide area network that spans large geographical areas." },
+  { "id": 14, "term": "VPN", "definition": "A virtual private network that creates a secure connection over a public network." },
+  { "id": 15, "term": "Packet", "definition": "A formatted unit of data transmitted over a network." }
+]

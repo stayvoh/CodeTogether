@@ -1,0 +1,17 @@
+[
+  { "id": 1, "term": "Table", "definition": "A structured collection of related data arranged in rows and columns." },
+  { "id": 2, "term": "Primary Key", "definition": "A unique identifier for a row in a table." },
+  { "id": 3, "term": "Foreign Key", "definition": "A field in one table that references the primary key of another table." },
+  { "id": 4, "term": "SQL", "definition": "A language used for managing and querying relational databases." },
+  { "id": 5, "term": "Normalization", "definition": "The process of organizing data to reduce redundancy and improve integrity." },
+  { "id": 6, "term": "Transaction", "definition": "A sequence of operations performed as a single logical unit of work." },
+  { "id": 7, "term": "ACID", "definition": "A set of properties ensuring reliable transaction processing: Atomicity, Consistency, Isolation, Durability." },
+  { "id": 8, "term": "Index", "definition": "A structure that improves the speed of data retrieval operations." },
+  { "id": 9, "term": "Join", "definition": "A SQL operation that combines rows from two or more tables based on a related column." },
+  { "id": 10, "term": "Stored Procedure", "definition": "A precompiled SQL program stored in the database." },
+  { "id": 11, "term": "NoSQL", "definition": "A class of databases that store data in non-relational formats." },
+  { "id": 12, "term": "Schema", "definition": "The structure that defines tables, fields, and relationships in a database." },
+  { "id": 13, "term": "Query Plan", "definition": "The database’s internal strategy for executing a query." },
+  { "id": 14, "term": "Data Warehouse", "definition": "A large, centralized repository optimized for analytical queries." },
+  { "id": 15, "term": "Replication", "definition": "The process of copying and distributing data across multiple servers." }
+]

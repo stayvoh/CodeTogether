@@ -1,21 +1,4 @@
 // --- Core Application Data ---
-const vocabulary = [
-    { id: 1, term: "Boolean", definition: "A data type having only two possible values, typically true or false (0 or 1)." },
-    { id: 2, term: "Algorithm", definition: "A finite sequence of well-defined, computer-implementable instructions to solve a class of problems." },
-    { id: 3, term: "Recursion", definition: "A process in which a function or procedure calls itself, either directly or indirectly." },
-    { id: 4, term: "Syntax", definition: "The set of rules that defines how a program or script is written and structured in a programming language." },
-    { id: 5, term: "Compile", definition: "To translate source code written in a high-level language into machine code or bytecode." },
-    { id: 6, term: "API", definition: "A set of functions and procedures that allow the creation of applications accessing features or data of an operating system, application, or other service." },
-    { id: 7, term: "Framework", definition: "A platform for developing software applications that provides a foundation on which software developers can build programs for a specific platform." },
-    { id: 8, term: "Object-Oriented Programming", definition: "A programming paradigm based on the concept of 'objects', which can contain data and code to manipulate that data." },
-    { id: 9, term: "Database", definition: "An organized collection of data, generally stored and accessed electronically from a computer system." },
-    { id: 10, term: "Version Control", definition: "A system that records changes to a file or set of files over time so that specific versions can be recalled later." },
-    { id: 11, term: "Encapsulation", definition: "The bundling of data with the methods that operate on that data, restricting direct access to some of the object's components." },
-    { id: 12, term: "Inheritance", definition: "A mechanism in object-oriented programming that allows a new class to inherit properties and behavior (methods) from an existing class." },
-    { id: 13, term: "Polymorphism", definition: "The ability of different classes to be treated as instances of the same class through a common interface, typically by overriding methods." },
-    { id: 14, term: "Asynchronous Programming", definition: "A programming paradigm that allows for non-blocking operations, enabling tasks to run concurrently without waiting for each other to complete." },
-    { id: 15, term: "Lambda Function", definition: "A small anonymous function defined with the lambda keyword, often used for short, throwaway functions." }
-];
 
 // --- Global State ---
 let currentCards = [];
@@ -29,6 +12,22 @@ const totalMatchesElement = document.getElementById('total-matches');
 const gameOverModal = document.getElementById('game-over-modal');
 const progressBar = document.getElementById('progress-bar'); // NEW
 const progressText = document.getElementById('progress-text'); // NEW
+const urlParams = new URLSearchParams(window.location.search);
+const setName = urlParams.get('set') || 'default';
+const mainTitle = document.getElementById('main-title');
+if (mainTitle) {
+    let displayName = setName;
+
+    // If it's a user set, remove "user/" prefix
+    if (setName.startsWith('user/')) {
+        displayName = setName.slice(5); // remove first 5 characters
+    }
+
+    // Capitalize the first letter
+    const formattedSet = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+    mainTitle.textContent = `${formattedSet} Terminology: Match`;
+}
+
 
 // --- AutoScroll during the drag operation ---
 let autoScrollInterval = null;
@@ -225,31 +224,52 @@ function renderDefinitions(definitions) {
 
 // --- Game Flow Functions ---
 
-function startGame() {
+async function startGame() {
+      
     // Reset state
-    currentCards = JSON.parse(JSON.stringify(vocabulary)); // Deep copy
     score = 0;
     scoreElement.textContent = 0;
-    totalMatchesElement.textContent = currentCards.length;
 
+    // Fetch the set from the controller
+    try {
+        const response = await fetch(`index.php?action=cards&do=play&set=${encodeURIComponent(setName)}`, {
+            headers: { 'Accept': 'application/json' }
+        });
+        console.log('Fetch response status:', response.status);
+        const data = await response.json();
+        console.log('Data returned from server:', data);  
+        currentCards = data;
+        console.log('currentCards array length:', currentCards.length);
+        console.log('currentCards contents:', currentCards);
 
-    // Reset Progress Bar
-    progressBar.style.width = '0%';
-    progressText.textContent = '0%';
-    progressText.style.color = '#030303ff'; // Ensure text is visible when bar is empty
+        if (!Array.isArray(currentCards) || currentCards.length === 0) {
+            alert('No cards found for this set.');
+            return;
+        }
 
+        totalMatchesElement.textContent = currentCards.length;
 
-    // Prepare cards
-    const shuffledTerms = JSON.parse(JSON.stringify(currentCards)); // Shuffled Terms (left column)
-    shuffleArray(shuffledTerms);
+        // Reset Progress Bar
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        progressText.style.color = '#030303ff';
 
-    const definitions = currentCards; // Definitions (right column) - we want these fixed
-    shuffleArray(definitions);
-    // Note: We don't shuffle definitions so the matching is clear, only the terms are shuffled.
+        // Shuffle terms for left column
+        const shuffledTerms = JSON.parse(JSON.stringify(currentCards));
+        shuffleArray(shuffledTerms);
 
-    // Render
-    renderTerms(shuffledTerms);
-    renderDefinitions(definitions);
+        // Shuffle definitions for right column
+        const definitions = JSON.parse(JSON.stringify(currentCards));
+        shuffleArray(definitions);
+
+        // Render
+        renderTerms(shuffledTerms);
+        renderDefinitions(definitions);
+
+    } catch (error) {
+        console.error('Failed to load flashcards:', error);
+        alert('Failed to load flashcards.');
+    }
 }
 
 function endGame() {

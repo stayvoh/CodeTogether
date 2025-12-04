@@ -26,7 +26,7 @@
         <!-- Main Application Content (Z-index 10) -->
         <div id="app" class="app-container">
             <!-- Header -->
-            <h1 class="main-title matrix-text">
+            <h1 id="main-title" class="main-title matrix-text">
                 SYSTEM TERMINOLOGY: MATCH
             </h1>
             <p class="matrix-subtitle-text">
