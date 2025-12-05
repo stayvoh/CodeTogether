@@ -257,3 +257,8 @@
         font-size: 2rem;
     }
 }
+#editor {
+    background-color: #1e1e1e;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
