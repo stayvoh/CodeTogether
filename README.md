@@ -1,19 +1,71 @@
 # CodeTogether
-A website for CS students!
 
-Make sure docker is installed!
+A collaborative website for CS students!
 
-After cloning create a .env file in CodeTogether/CodeTogether directory. Reach out to one of the original developers for the correct .env file
+## Prerequisites
 
-If on linux you can simply run ./docker-compose-start.sh -d --build you will need sudo privliges 
+Make sure Docker is installed on your system before proceeding.
 
-./freshDb.sh will restart the containers with a fresh database
+## Setup
 
-./dbMod.sh will exec into the database container
+### 1. Clone the Repository
 
-If not on linux, all docker commands will have to be executed manually, to start up the containers run docker compose up -d --build
+After cloning the repository, you'll need to create an environment file.
 
-Additonally if not on linux make sure that the CodeTogether/CodeTogether/app/public/uploads directory exsits
+### 2. Environment Configuration
 
+Create a `.env` file in the `CodeTogether/CodeTogether` directory. 
 
-The webapp follows an MVC architecture, Request -> Router -> Controller -> View 
+**Note:** Reach out to one of the original developers for the correct `.env` file contents.
+
+### 3. Create Uploads Directory (Non-Linux Systems)
+
+If you're **not** on Linux, ensure that the following directory exists:
+
+```
+CodeTogether/CodeTogether/app/public/uploads
+```
+
+## Running the Application
+
+### On Linux
+
+If you're on Linux, you can use the provided shell scripts (requires sudo privileges):
+
+```bash
+./docker-compose-start.sh -d --build
+```
+
+### On Other Systems
+
+If you're not on Linux, execute Docker commands manually:
+
+```bash
+docker compose up -d --build
+```
+
+## Utility Scripts (Linux)
+
+### Fresh Database
+
+Restart the containers with a fresh database:
+
+```bash
+./freshDb.sh
+```
+
+### Database Access
+
+Execute into the database container:
+
+```bash
+./dbMod.sh
+```
+
+## Architecture
+
+The webapp follows an **MVC architecture**:
+
+```
+Request → Router → Controller → View
+```
