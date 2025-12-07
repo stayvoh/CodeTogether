@@ -333,6 +333,27 @@ class UserDAO
         return $users;
     }
 
+    public function updateProfileMusic(int $userID, ?string $fileName): bool
+    {
+        $conn = Database::getConnection();
+        $stmt = $conn->prepare("UPDATE user SET profile_music = ? WHERE user_id = ?");
+        $stmt->bind_param("si", $fileName, $userID);
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+    }
+
+    public function getProfileMusic(int $userID): ?string
+    {
+        $conn = Database::getConnection();
+        $stmt = $conn->prepare("SELECT profile_music FROM user WHERE user_id = ?");
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return $row['profile_music'] ?? null;
+    }
 
 
 }

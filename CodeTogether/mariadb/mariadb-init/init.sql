@@ -173,6 +173,9 @@ CREATE TABLE game_bridge (
         ON UPDATE CASCADE
 );
 
+ALTER TABLE user
+  ADD COLUMN profile_music VARCHAR(255) NULL;
+
 INSERT INTO role (role_id, role_name, privileges, description) VALUES
 (1, 'moderator', 'manage_users,edit_content,game_mod,game_review', 'Moderates users, content, and games.'),
 (2, 'student', 'view_content,create_content,comment,participate_in_games', 'Can view content, create their own content, comment, and participate in games.'),

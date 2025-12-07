@@ -166,6 +166,46 @@
             </div>
           <?php endif; ?>
 
+          <?php
+            // Figure out current user's music file
+            $musicFile   = $user->getProfileMusic();
+            $musicFsPath = $musicFile ? (__DIR__ . '/../uploads/' . $musicFile) : null;
+            $musicWebPath = $musicFile ? ('/public/uploads/' . rawurlencode((string)$musicFile)) : null;
+
+            // Simple "is this my profile?" check using the same session you already use
+            $isOwnProfile = !empty($_SESSION['usercreds']['userID'])
+                && (int)$_SESSION['usercreds']['userID'] === (int)$user->getUserID();
+            ?>
+
+            <div class="profile-card mb-4 mt-3 p-3">
+              <h4 class="text-info mb-3">Profile Song</h4>
+
+              <?php if (!empty($musicFile) && $musicFsPath && file_exists($musicFsPath)): ?>
+                <audio controls class="w-100 mb-2">
+                  <source src="<?= htmlspecialchars($musicWebPath, ENT_QUOTES, 'UTF-8') ?>" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              <?php else: ?>
+                <p class="text-muted mb-2 mb-0">No profile song set yet.</p>
+              <?php endif; ?>
+
+              <?php if ($isOwnProfile): ?>
+                <form action="index.php?action=addProfileMusic"
+                      method="post"
+                      enctype="multipart/form-data"
+                      class="mt-2">
+                  <div class="mb-2">
+                    <input type="file"
+                          name="profileMusic"
+                          class="form-control form-control-sm"
+                          accept="audio/*">
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-outline-info rounded-pill w-100">
+                    <?= !empty($musicFile) ? 'Change Profile Song' : 'Upload Profile Song' ?>
+                  </button>
+                </form>
+              <?php endif; ?>
+            </div>
 
 
           <!-- Friends list -->

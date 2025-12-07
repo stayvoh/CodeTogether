@@ -25,6 +25,7 @@ include_once __DIR__ . "/controllers/LikePostController.php";
 include_once __DIR__ . "/controllers/PrivacyPolicyController.php";
 include_once __DIR__ . "/controllers/TermsController.php";
 include_once __DIR__ . "/controllers/AddProfilePictureController.php";
+include_once __DIR__ . "/controllers/AddProfileMusicController.php";
 include_once __DIR__ . "/controllers/NoPermissionController.php";
 include_once __DIR__ . "/controllers/MessagesController.php";
 include_once __DIR__ . "/controllers/ViewPostController.php";
@@ -53,6 +54,7 @@ $router->addController('search', new SearchController());
 $router->addController('game', new GameController());
 $router->addController('profile', new ProfileController());
 $router->addController('addPost', new AddPostController());
+$router->addController('addProfileMusic', new AddProfileMusicController());
 $router->addController('deletePost', new DeletePostController());
 $router->addController('editPost', new EditPostController());
 $router->addController('likePost', new LikePostController());
@@ -68,6 +70,7 @@ $router->addController('viewPost', new ViewPostController());
 $router->addController('cards', new FlashCardsController());
 $router->addController('addPoints', new AddPointsController());
 $router->addController('status', new UpdateStatusController());
+
 
 
 # Register default controller (used when no action is specified)
