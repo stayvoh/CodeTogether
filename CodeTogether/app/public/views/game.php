@@ -121,7 +121,7 @@ function submitCode() {
         body: JSON.stringify({
             code: editor.getValue(),
             language: document.getElementById('languageSelect').value,
-            problem: JSON.stringify(currentProblem)
+            problem: currentProblem
         })
     })
     .then(r => r.json())
