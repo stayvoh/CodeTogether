@@ -6,6 +6,7 @@ require_once __DIR__ . '/../config/EventDispatcher.php';
 class ProfileDAO
 {
     private mysqli $conn;
+    
 
     public function __construct()
     {
