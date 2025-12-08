@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 session_start();
+require_once __DIR__ . '/dao/UserDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
@@ -13,7 +14,7 @@ if (!$input || !isset($input['code'], $input['language'], $input['problem'])) {
     exit;
 }
 
-$user = $_SESSION['username'] ?? 'guest';
+$user = $_SESSION['usercreds']['username'] ?? 'guest';
 $code = $input['code'];
 $language = $input['language'];
 $problem = $input['problem'];
@@ -82,12 +83,23 @@ if (!$judgement) {
     exit;
 }
 
-// Update leaderboard
-$leaderboardFile = __DIR__ . '/leaderboard.json';
-$leaderboard = file_exists($leaderboardFile) ? json_decode(file_get_contents($leaderboardFile), true) : [];
-$leaderboard[$user] = max($leaderboard[$user] ?? 0, $judgement['score'] ?? 0);
-arsort($leaderboard);
-file_put_contents($leaderboardFile, json_encode($leaderboard, JSON_PRETTY_PRINT));
+// Update user points in database
+$userDAO = new UserDAO();
+$userObj = $userDAO->getUserByName($user);
+if ($userObj) {
+    $score = $judgement['score'] ?? 0;
+    $userDAO->addPoints($userObj->getUserID(), $score);
+}
+
+// Get top users from database
+$topUsers = $userDAO->getTopUsersByPoints(3);
+$leaderboard = [];
+foreach ($topUsers as $topUser) {
+    $leaderboard[] = [
+        'username' => $topUser->getUsername(),
+        'points' => $topUser->getPoints()
+    ];
+}
 
 // Return result + top 3
 echo json_encode([

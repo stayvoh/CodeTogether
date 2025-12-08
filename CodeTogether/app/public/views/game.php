@@ -135,9 +135,9 @@ function submitCode() {
                 <strong>Feedback:</strong> ${data.feedback}<br>
                 <strong>Top Users:</strong><br>
             `;
-            for (const [user, score] of Object.entries(data.leaderboard)) {
-                html += `${user}: ${score}<br>`;
-            }
+            data.leaderboard.forEach(entry => {
+                html += `${entry.username}: ${entry.points}<br>`;
+            });
             document.getElementById('submissionResult').innerHTML = html;
         }
     });
