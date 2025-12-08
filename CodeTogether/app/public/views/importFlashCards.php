@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Flashcard Set</title>
+    <title>Import Flashcard Set</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,8 +17,6 @@
     <!-- Core styles -->
     <link rel="stylesheet" href="../public/css/core/main.css">
     <link rel="stylesheet" href="../public/css/page/CreateFlashcards.css?v=1.0">
-
-    <!-- FlashCards page styles -->
     <link rel="stylesheet" href="../public/css/page/FlashCards.css?v=1.1">
 </head>
 
@@ -33,31 +31,47 @@
         <div id="app" class="app-container">
 
             <h1 class="main-title matrix-text">
-                CREATE YOUR FLASHCARD SET
+                IMPORT FLASHCARDS
             </h1>
 
             <p class="matrix-subtitle-text">
-                Build a personalized training program. Fill out your terms and definitions below.
+                Upload a <strong>.csv</strong> or <strong>.txt</strong> file and we’ll automatically create your deck.
             </p>
 
-            <!-- MANUAL CREATION FORM -->
-            <form method="POST" action="index.php?action=cards&do=save" class="create-set-form">
-                
+            <form method="POST"
+                  action="index.php?action=cards&do=import"
+                  enctype="multipart/form-data"
+                  class="import-set-form">
+
                 <div class="mb-4">
-                    <label class="form-label matrix-text" for="set-name">Set Name</label>
-                    <input type="text" class="form-control matrix-text" id="set-name" name="set_name" placeholder="Enter your set name" required>
+                    <label class="form-label matrix-text" for="import-set-name">Imported Set Name</label>
+                    <input type="text"
+                           class="form-control matrix-text"
+                           id="import-set-name"
+                           name="set_name"
+                           placeholder="Enter name for imported set"
+                           required>
                 </div>
 
-                <div class="set-grid" id="cards-container">
-                    <!-- JS dynamically injects rows here -->
+                <div class="mb-4">
+                    <label class="form-label matrix-text" for="flashcard-file">Flashcard File (.csv or .txt)</label>
+                    <input type="file"
+                           class="form-control matrix-text"
+                           id="flashcard-file"
+                           name="flashcard_file"
+                           accept=".csv,.txt"
+                           required>
                 </div>
 
-                <button type="button" id="add-card-btn" class="btn btn-outline-success matrix-text mt-3">
-                    + Add Card
-                </button>
+                <p class="matrix-text small">
+                    <strong>CSV format:</strong> <span>Front,Back</span><br>
+                    <strong>TXT format:</strong> <span>Question | Answer</span>  - or tab separated.
+                </p>
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-outline-success matrix-text">Save Set</button>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-outline-success matrix-text">
+                        <i class="fa-solid fa-file-import"></i> Import Flashcards
+                    </button>
                     <a href="?action=cards" class="btn btn-outline-success matrix-text">Cancel</a>
                 </div>
 
@@ -71,8 +85,6 @@
     <script src="/public/js/core/theme.js"></script>
     <script src="/public/js/core/rain.js"></script>
     <script src="/public/js/core/status.js"></script>
-    <script src="/public/js/page/FlashCards.js"></script>
-    <script src="/public/js/page/CreateFlashcards.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

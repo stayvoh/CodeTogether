@@ -10,7 +10,6 @@ if (!$apiKey) {
 // File to store today's problem
 $filename = __DIR__ . '/dailyProblem.json';
 $today = date('Y-m-d');
-
 // Check if file exists and is from today
 if (file_exists($filename)) {
     $data = json_decode(file_get_contents($filename), true);
@@ -22,11 +21,11 @@ if (file_exists($filename)) {
 }
 
 // If we reach here, we need to generate a new problem
-$language = $_GET['language'] ?? 'javascript';
-$difficulty = $_GET['difficulty'] ?? 'beginner';
+$difficulty = $_GET['difficulty'] ?? 'intermediate';
 
 $prompt = <<<EOT
-Generate a daily coding challenge in $language for $difficulty users. 
+Generate a daily coding challenge for $difficulty users. 
+The challenge should be solvable using Java, JavaScript, C#, C++, or Python.
 Provide ONLY JSON like:
 {
     "title": "...",

@@ -173,8 +173,9 @@ CREATE TABLE game_bridge (
         ON UPDATE CASCADE
 );
 
-ALTER TABLE user
-  ADD COLUMN profile_music VARCHAR(255) NULL;
+ALTER TABLE user ADD COLUMN profile_music VARCHAR(255) NULL;
+ALTER TABLE user ADD COLUMN last_daily_submission_date DATE;
+ALTER TABLE user ADD COLUMN last_daily_problem_title VARCHAR(255);
 
 INSERT INTO role (role_id, role_name, privileges, description) VALUES
 (1, 'moderator', 'manage_users,edit_content,game_mod,game_review', 'Moderates users, content, and games.'),
