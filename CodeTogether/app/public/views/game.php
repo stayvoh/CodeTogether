@@ -26,19 +26,7 @@
 <main class="page-game">
 <div class="container-fluid container-lg py-5">
 
-    <!-- STREAK DISPLAY -->
-    <div class="streak-box mb-3">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 text-center">
-                <div class="streak-display">
-                    <i class="fa-solid fa-fire text-orange-500"></i>
-                    <span class="streak-number" id="currentStreak">0</span>
-                    <span class="streak-label">day streak!</span>
-                    <span class="streak-best ms-3">Best: <span id="longestStreak">0</span></span>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- DAILY CHALLENGE BOX -->
     <div class="challenge-box mb-4">
@@ -73,7 +61,6 @@
             </div>
 
             <div id="submissionResult" class="mt-3 text-center"></div>
-            <div id="streakMilestone" class="mt-3 text-center d-none"></div>
         </div>
     </div>
 
@@ -112,7 +99,7 @@ require(["vs/editor/editor.main"], function () {
     });
 
     fetchProblem();
-    fetchUserStreak();
+    checkSubmissionStatus();
 });
 
 function fetchProblem() {
@@ -131,7 +118,7 @@ function fetchProblem() {
         });
 }
 
-function fetchUserStreak() {
+function checkSubmissionStatus() {
     fetch('submit.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,42 +126,21 @@ function fetchUserStreak() {
             code: '',
             language: '',
             problem: { title: '', description: '' },
-            checkStreakOnly: true
+            checkSubmissionStatus: true
         })
     })
     .then(r => r.json())
     .then(data => {
-        if (data.streak) {
-            updateStreakDisplay(data.streak);
+        if (data.submission) {
+            hasSubmittedToday = data.submission.alreadySubmitted;
+            if (hasSubmittedToday) {
+                updateSubmitButton();
+            }
         }
     })
     .catch(err => {
-        console.error('Error fetching streak:', err);
+        console.error('Error checking submission status:', err);
     });
-}
-
-function updateStreakDisplay(streakData) {
-    document.getElementById('currentStreak').textContent = streakData.current;
-    document.getElementById('longestStreak').textContent = streakData.longest;
-    
-    if (streakData.milestone) {
-        showStreakMilestone(streakData.current);
-    }
-}
-
-function showStreakMilestone(streak) {
-    const milestoneDiv = document.getElementById('streakMilestone');
-    milestoneDiv.innerHTML = `
-        <div class="alert alert-warning">
-            <i class="fa-solid fa-trophy"></i> 
-            <strong>Milestone!</strong> ${streak} day streak! Keep it up!
-        </div>
-    `;
-    milestoneDiv.classList.remove('d-none');
-    
-    setTimeout(() => {
-        milestoneDiv.classList.add('d-none');
-    }, 5000);
 }
 
 function submitCode() {
@@ -209,11 +175,6 @@ function submitCode() {
         } else {
             hasSubmittedToday = true;
             updateSubmitButton();
-            
-            // Update streak display
-            if (data.streak) {
-                updateStreakDisplay(data.streak);
-            }
             
             let html = `
                 <div class="alert alert-success">

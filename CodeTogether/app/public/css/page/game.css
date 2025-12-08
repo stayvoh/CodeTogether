@@ -15,55 +15,7 @@
     z-index: -1;
 }
 
-.page-game .streak-box {
-    background: var(--card);
-    border-radius: 1.25rem;
-    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.25);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
 
-.page-game .streak-box:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(255, 165, 0, 0.35);
-}
-
-.page-game .streak-display {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--text);
-}
-
-.page-game .streak-display .fa-fire {
-    color: #ff6b35;
-    font-size: 1.5rem;
-    margin-right: 0.5rem;
-    animation: flicker 2s infinite;
-}
-
-@keyframes flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-}
-
-.page-game .streak-number {
-    color: #ff6b35;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 0 0.3rem;
-}
-
-.page-game .streak-label {
-    color: var(--text);
-    font-size: 1.1rem;
-}
-
-.page-game .streak-best {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
 
 .page-game .challenge-box {
     background: var(--card);

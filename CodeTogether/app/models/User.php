@@ -16,11 +16,8 @@ class User implements JsonSerializable
     private ?DateTime $latestUpdate;
     private string $password;
     private int $requestInitiatorID;
-    private int $currentStreak;
-    private int $longestStreak;
-    private ?DateTime $lastSubmissionDate;
 
-    public function __construct(int $userID = -1, int $roleID = -1, string $username = '', int $points = -1, string $status = '', string $email = '', string $password = '', bool $isDeleted = false, ?DateTime $createdOn = null, ?DateTime $latestUpdate = null, int $requestInitiatorID = -1, string $aboutMe = '', string $profilePicture = '', int $currentStreak = 0, int $longestStreak = 0, ?DateTime $lastSubmissionDate = null)
+    public function __construct(int $userID = -1, int $roleID = -1, string $username = '', int $points = -1, string $status = '', string $email = '', string $password = '', bool $isDeleted = false, ?DateTime $createdOn = null, ?DateTime $latestUpdate = null, int $requestInitiatorID = -1, string $aboutMe = '', string $profilePicture = '')
     {
         $this->userID = $userID;
         $this->roleID = $roleID;
@@ -35,9 +32,6 @@ class User implements JsonSerializable
         $this->requestInitiatorID = $requestInitiatorID;
         $this->aboutMe = $aboutMe;
         $this->profilePicture = $profilePicture;
-        $this->currentStreak = $currentStreak;
-        $this->longestStreak = $longestStreak;
-        $this->lastSubmissionDate = $lastSubmissionDate;
     }
 
     public function load(array $row): void
@@ -54,9 +48,6 @@ class User implements JsonSerializable
         $this->password = $row['password'];
         $this->aboutMe = $row['about_me'];
         $this->profilePicture = $row['profile_picture'];
-        $this->currentStreak = $row['current_streak'] ?? 0;
-        $this->longestStreak = $row['longest_streak'] ?? 0;
-        $this->lastSubmissionDate = isset($row['last_submission_date']) ? new DateTime($row['last_submission_date']) : null;
     }
 
     public function jsonSerialize(): array
@@ -74,10 +65,7 @@ class User implements JsonSerializable
             'password' => $this->password,
             'requestInitiatorID' => $this->requestInitiatorID,
             'aboutMe' => $this->aboutMe,
-            'profilePicture' => $this->profilePicture,
-            'currentStreak' => $this->currentStreak,
-            'longestStreak' => $this->longestStreak,
-            'lastSubmissionDate' => $this->lastSubmissionDate
+            'profilePicture' => $this->profilePicture
         );
     }
 
@@ -210,34 +198,6 @@ class User implements JsonSerializable
         return $this->profilePicture;
     }
 
-    public function setCurrentStreak(int $currentStreak): void
-    {
-        $this->currentStreak = $currentStreak;
-    }
 
-    public function getCurrentStreak(): int
-    {
-        return $this->currentStreak;
-    }
-
-    public function setLongestStreak(int $longestStreak): void
-    {
-        $this->longestStreak = $longestStreak;
-    }
-
-    public function getLongestStreak(): int
-    {
-        return $this->longestStreak;
-    }
-
-    public function setLastSubmissionDate(?DateTime $lastSubmissionDate): void
-    {
-        $this->lastSubmissionDate = $lastSubmissionDate;
-    }
-
-    public function getLastSubmissionDate(): ?DateTime
-    {
-        return $this->lastSubmissionDate;
-    }
 }
 ?>

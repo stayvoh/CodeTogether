@@ -173,24 +173,8 @@ CREATE TABLE game_bridge (
         ON UPDATE CASCADE
 );
 
--- Main submission tracking table
-CREATE TABLE daily_submissions (
-    submission_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    submission_date DATE NOT NULL,
-    problem_title VARCHAR(255) NOT NULL,
-    score INT DEFAULT 0,
-    correct BOOLEAN DEFAULT FALSE,
-    submission_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    code_text TEXT,
-    language VARCHAR(50),
-    UNIQUE KEY unique_daily_submission (user_id, submission_date, problem_title),
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
-);
--- Add streak tracking to user table
-ALTER TABLE user ADD COLUMN current_streak INT DEFAULT 0;
-ALTER TABLE user ADD COLUMN longest_streak INT DEFAULT 0;
-ALTER TABLE user ADD COLUMN last_submission_date DATE NULL;
+ALTER TABLE user ADD COLUMN last_daily_submission_date DATE;
+ALTER TABLE user ADD COLUMN last_daily_problem_title VARCHAR(255);
 
 INSERT INTO role (role_id, role_name, privileges, description) VALUES
 (1, 'moderator', 'manage_users,edit_content,game_mod,game_review', 'Moderates users, content, and games.'),

@@ -333,15 +333,7 @@ class UserDAO
         return $users;
     }
 
-    public function updateStreakInfo(int $userId, int $currentStreak, int $longestStreak, string $lastSubmissionDate): bool
-    {
-        $conn = Database::getConnection();
-        $stmt = $conn->prepare("UPDATE user SET current_streak = ?, longest_streak = ?, last_submission_date = ? WHERE user_id = ?");
-        $stmt->bind_param("iisi", $currentStreak, $longestStreak, $lastSubmissionDate, $userId);
-        $result = $stmt->execute();
-        $stmt->close();
-        return $result;
-    }
+
 
     public function getUserStreakInfo(int $userId): array
     {
@@ -367,25 +359,53 @@ class UserDAO
         ];
     }
 
-    public function getTopUsersByStreak(int $limit = 5): array
+    public function hasSubmittedToday(int $userId, string $problemTitle): bool
     {
         $conn = Database::getConnection();
-        $stmt = $conn->prepare("SELECT * FROM user ORDER BY current_streak DESC, longest_streak DESC LIMIT ?");
-        $stmt->bind_param("i", $limit);
+        $today = date('Y-m-d');
+        
+        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM user WHERE user_id = ? AND last_daily_submission_date = ? AND last_daily_problem_title = ?");
+        $stmt->bind_param("iss", $userId, $today, $problemTitle);
         $stmt->execute();
-
-        $result = $stmt->get_result();
-        $users = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $user = new User();
-            $user->load($row);
-            $users[] = $user;
-        }
-
+        $result = $stmt->get_result()->fetch_assoc();
         $stmt->close();
-
-        return $users;
+        
+        return $result['count'] > 0;
+    }
+    
+    public function recordDailySubmission(int $userId, string $problemTitle): void
+    {
+        $conn = Database::getConnection();
+        $today = date('Y-m-d');
+        
+        $stmt = $conn->prepare("UPDATE user SET last_daily_submission_date = ?, last_daily_problem_title = ? WHERE user_id = ?");
+        $stmt->bind_param("ssi", $today, $problemTitle, $userId);
+        $stmt->execute();
+        $stmt->close();
+    }
+    
+    public function getDailySubmissionStatus(int $userId): array
+    {
+        $conn = Database::getConnection();
+        $today = date('Y-m-d');
+        
+        $stmt = $conn->prepare("SELECT last_daily_submission_date, last_daily_problem_title FROM user WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        
+        if (!$result) {
+            return ['alreadySubmitted' => false, 'canSubmit' => true];
+        }
+        
+        $alreadySubmitted = ($result['last_daily_submission_date'] === $today && 
+                          $result['last_daily_problem_title'] !== null);
+        
+        return [
+            'alreadySubmitted' => $alreadySubmitted,
+            'canSubmit' => !$alreadySubmitted
+        ];
     }
 
 
