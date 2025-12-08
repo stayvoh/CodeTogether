@@ -71,14 +71,43 @@
                         <h3 class="matrix-text">Database</h3>
                         <p>Data modeling, SQL, transactions, and database design principles.</p>
                     </a>
+                    
                     <?php if (!empty($customSets)): ?>
                         <?php foreach ($customSets as $setName): ?>
-                            <a href="?action=cards&do=play&set=user/<?= urlencode($setName) ?>" class="set-box">
-                                <h3 class="matrix-text"><?= htmlspecialchars($setName) ?></h3>
-                                <p>Your custom flashcard set.</p>
-                            </a>
+
+                            <?php 
+                                // Make the displayed name friendly: test_deck_1 → Test Deck 1
+                                $displayName = ucwords(str_replace(['_', '-'], ' ', $setName)); 
+                            ?>
+
+                            <div class="set-box position-relative">
+
+                                <!-- Play link -->
+                                <a href="?action=cards&do=play&set=user/<?= urlencode($setName) ?>" 
+                                class="text-decoration-none d-block"
+                                style="color: inherit;">
+                                    <h3 class="matrix-text"><?= htmlspecialchars($displayName) ?></h3>
+                                    <p>Your custom flashcard set.</p>
+                                </a>
+
+                                <!-- Delete button (top-right corner) -->
+                                <form method="POST" 
+                                    action="index.php?action=cards&do=delete"
+                                    onsubmit="return confirm('Delete this flashcard set permanently?');"
+                                    style="position: absolute; top: 10px; right: 10px;">
+                                    <input type="hidden" name="set" value="<?= htmlspecialchars($setName) ?>">
+                                    <button type="submit" 
+                                            class="btn btn-outline-danger matrix-text"
+                                            style="padding:2px 6px; font-size: 0.75rem;">
+                                        X
+                                    </button>
+                                </form>
+
+                            </div>
+
                         <?php endforeach; ?>
                     <?php endif; ?>
+
 
                 
 
@@ -91,7 +120,7 @@
                
 
              
-                   <a href="?action=cards&do=upload" class="set-box">
+                   <a href="?action=cards&do=import" class="set-box">
                         <h3 class="matrix-text">Upload Set</h3>
                         <p>Upload a CSV to instantly generate a new flashcard training set.</p>
                     </a>
