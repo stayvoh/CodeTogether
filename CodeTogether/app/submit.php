@@ -16,7 +16,7 @@ if (!$input || !isset($input['code'], $input['language'], $input['problem'])) {
 $user = $_SESSION['username'] ?? 'guest';
 $code = $input['code'];
 $language = $input['language'];
-$problem = json_decode($input['problem'], true);
+$problem = $input['problem'];
 
 if (!$problem) {
     echo json_encode(['error' => 'Problem data invalid']);
@@ -39,6 +39,8 @@ Example Input: {$problem['exampleInput']}
 Example Output: {$problem['exampleOutput']}
 
 User submission in {$language}:
+
+{$code}
 
 Return JSON ONLY:
 {
