@@ -81,6 +81,18 @@
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
   padding: 4px 0;
+  z-index: 1050;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 10rem;
+  margin: 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-clip: padding-box;
+  border: 1px solid var(--accent);
 }
 
 .custom-dropdown-item {

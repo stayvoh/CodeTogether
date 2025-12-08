@@ -26,7 +26,7 @@ if (typeof require !== "undefined") {
 }
 
 function fetchProblem() {
-    fetch('generateProblem.php?language=javascript&difficulty=beginner')
+    fetch('generateProblem.php?difficulty=intermediate')
         .then(r => r.json())
         .then(problem => {
             currentProblem = problem;

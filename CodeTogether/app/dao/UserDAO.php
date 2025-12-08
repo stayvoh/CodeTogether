@@ -333,6 +333,23 @@ class UserDAO
         return $users;
     }
 
+    private function getEffectiveDate(): string
+    {
+        $problemFile = __DIR__ . '/../dailyProblem.json';
+        if (file_exists($problemFile)) {
+            $data = json_decode(file_get_contents($problemFile), true);
+            $problemDate = $data['date'] ?? null;
+            
+            // If problem date is different from today, use problem date (testing mode)
+            if ($problemDate && $problemDate !== date('Y-m-d')) {
+                return $problemDate;
+            }
+        }
+        
+        // Otherwise use real date (normal operation)
+        return date('Y-m-d');
+    }
+
 
 
     public function getUserStreakInfo(int $userId): array
@@ -362,7 +379,7 @@ class UserDAO
     public function hasSubmittedToday(int $userId, string $problemTitle): bool
     {
         $conn = Database::getConnection();
-        $today = date('Y-m-d');
+        $today = $this->getEffectiveDate();
         
         $stmt = $conn->prepare("SELECT COUNT(*) as count FROM user WHERE user_id = ? AND last_daily_submission_date = ? AND last_daily_problem_title = ?");
         $stmt->bind_param("iss", $userId, $today, $problemTitle);
@@ -376,7 +393,7 @@ class UserDAO
     public function recordDailySubmission(int $userId, string $problemTitle): void
     {
         $conn = Database::getConnection();
-        $today = date('Y-m-d');
+        $today = $this->getEffectiveDate();
         
         $stmt = $conn->prepare("UPDATE user SET last_daily_submission_date = ?, last_daily_problem_title = ? WHERE user_id = ?");
         $stmt->bind_param("ssi", $today, $problemTitle, $userId);
@@ -387,7 +404,7 @@ class UserDAO
     public function getDailySubmissionStatus(int $userId): array
     {
         $conn = Database::getConnection();
-        $today = date('Y-m-d');
+        $today = $this->getEffectiveDate();
         
         $stmt = $conn->prepare("SELECT last_daily_submission_date, last_daily_problem_title FROM user WHERE user_id = ?");
         $stmt->bind_param("i", $userId);
