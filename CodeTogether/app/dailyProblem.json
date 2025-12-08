@@ -1,9 +1,1 @@
-{
-    "date": "2025-12-08",
-    "problem": {
-        "title": "Double each number in an array",
-        "description": "Write a function named doubleNumbers(arr) that takes an array of numbers and returns a new array with every element multiplied by 2. Do not modify the original array. Assume all elements are numbers. For example, if the input is [1, 2, 3], the output should be [2, 4, 6].",
-        "exampleInput": "[1, 2, 3, 4, 5]",
-        "exampleOutput": "[2, 4, 6, 8, 10]"
-    }
-}
+{"date":"2025-12-10","problem":{"title":"Three Sum: Find all unique triplets that sum to zero","description":"Given an array of integers, return all unique triplets [a, b, c] such that a + b + c = 0. The result should not contain duplicate triplets. Each triplet should be sorted in non-decreasing order. The input array may contain negative, positive, and zero values. Aim for O(n^2) time after sorting; you can assume the input length is at least 3.","exampleInput":"[-1, 0, 1, 2, -1, -4]","exampleOutput":"[[-1, -1, 2], [-1, 0, 1]]"}}

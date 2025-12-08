@@ -14,6 +14,22 @@ if (!$input || !isset($input['code'], $input['language'], $input['problem'])) {
     exit;
 }
 
+// Handle submission status check
+if (isset($input['checkSubmissionStatus']) && $input['checkSubmissionStatus']) {
+    $user = $_SESSION['usercreds']['username'] ?? 'guest';
+    if ($user !== 'guest') {
+        $userDAO = new UserDAO();
+        $userObj = $userDAO->getUserByName($user);
+        if ($userObj) {
+            $submissionStatus = $userDAO->getDailySubmissionStatus($userObj->getUserID());
+            echo json_encode(['submission' => $submissionStatus]);
+            exit;
+        }
+    }
+    echo json_encode(['submission' => ['alreadySubmitted' => false, 'canSubmit' => true]]);
+    exit;
+}
+
 $user = $_SESSION['usercreds']['username'] ?? 'guest';
 $code = $input['code'];
 $language = $input['language'];
@@ -21,6 +37,27 @@ $problem = $input['problem'];
 
 if (!$problem) {
     echo json_encode(['error' => 'Problem data invalid']);
+    exit;
+}
+
+// Get user object
+$userDAO = new UserDAO();
+$userObj = $userDAO->getUserByName($user);
+if (!$userObj) {
+    echo json_encode(['error' => 'User not found']);
+    exit;
+}
+
+// Check if user already submitted today for this problem
+if ($userDAO->hasSubmittedToday($userObj->getUserID(), $problem['title'])) {
+    echo json_encode([
+        'error' => 'You have already submitted a solution for today\'s problem. Try again tomorrow!',
+        'alreadySubmitted' => true,
+        'submission' => [
+            'alreadySubmitted' => true,
+            'canSubmit' => false
+        ]
+    ]);
     exit;
 }
 
@@ -84,11 +121,12 @@ if (!$judgement) {
 }
 
 // Update user points in database
-$userDAO = new UserDAO();
-$userObj = $userDAO->getUserByName($user);
+$score = $judgement['score'] ?? 0;
 if ($userObj) {
-    $score = $judgement['score'] ?? 0;
     $userDAO->addPoints($userObj->getUserID(), $score);
+    
+    // Record the daily submission
+    $userDAO->recordDailySubmission($userObj->getUserID(), $problem['title']);
 }
 
 // Get top users from database
@@ -106,6 +144,10 @@ echo json_encode([
     'score' => $judgement['score'] ?? 0,
     'correct' => $judgement['correct'] ?? false,
     'feedback' => $judgement['feedback'] ?? 'No feedback provided',
-    'leaderboard' => array_slice($leaderboard, 0, 3, true)
+    'leaderboard' => array_slice($leaderboard, 0, 3, true),
+    'submission' => [
+        'alreadySubmitted' => false,
+        'canSubmit' => true
+    ]
 ]);
 ?>

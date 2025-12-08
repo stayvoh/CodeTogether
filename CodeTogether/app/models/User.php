@@ -197,5 +197,7 @@ class User implements JsonSerializable
     {
         return $this->profilePicture;
     }
+
+
 }
 ?>

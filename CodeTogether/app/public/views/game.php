@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Code Challenge</title>
 
-    <!-- Monaco Editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
-
     <!-- Bootstrap & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
@@ -25,6 +22,8 @@
 
 <main class="page-game">
 <div class="container-fluid container-lg py-5">
+
+
 
     <!-- DAILY CHALLENGE BOX -->
     <div class="challenge-box mb-4">
@@ -53,7 +52,7 @@
             <div id="editor" style="height: 500px; border-radius: 8px; overflow: hidden;"></div>
 
             <div class="text-center mt-3">
-                <button class="btn btn-success btn-lg px-5" onclick="submitCode()">
+                <button id="submitBtn" class="btn btn-success btn-lg px-5" onclick="submitCode()">
                     <i class="fa-solid fa-paper-plane"></i> Submit Solution
                 </button>
             </div>
@@ -65,84 +64,20 @@
 </div>
 </main>
 
+<!-- AI Review Widget -->
+<?php include __DIR__ . '/../includes/aiReviewWidget.php'; ?>
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<!-- Monaco Editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
 <script src="/public/js/core/theme.js"></script>
 <script src="/public/js/core/rain.js"></script>
 <script src="/public/js/core/status.js"></script>
-
-<script>
-require.config({
-    paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }
-});
-
-let editor;
-let currentProblem = {};
-
-require(["vs/editor/editor.main"], function () {
-    editor = monaco.editor.create(document.getElementById("editor"), {
-        value: "// Write your solution here",
-        language: "javascript",
-        theme: "vs-dark",
-        automaticLayout: true,
-        lineNumbers: "on",
-        minimap: { enabled: true },
-        fontSize: 16
-    });
-
-    document.getElementById("languageSelect").addEventListener("change", function () {
-        monaco.editor.setModelLanguage(editor.getModel(), this.value);
-    });
-
-    fetchProblem();
-});
-
-function fetchProblem() {
-    fetch('generateProblem.php?language=javascript&difficulty=beginner')
-        .then(r => r.json())
-        .then(problem => {
-            currentProblem = problem;
-            document.getElementById('problemTitle').textContent = problem.title;
-            document.getElementById('problemDescription').textContent = problem.description;
-            document.getElementById('problemExample').textContent =
-                `Example Input: ${problem.exampleInput} | Example Output: ${problem.exampleOutput}`;
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById('problemTitle').textContent = "Error loading problem";
-        });
-}
-
-function submitCode() {
-    fetch('submit.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            code: editor.getValue(),
-            language: document.getElementById('languageSelect').value,
-            problem: currentProblem
-        })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.error) {
-            document.getElementById('submissionResult').innerHTML = `<span class="text-danger">${data.error}</span>`;
-        } else {
-            let html = `
-                <strong>Score:</strong> ${data.score}<br>
-                <strong>Correct:</strong> ${data.correct}<br>
-                <strong>Feedback:</strong> ${data.feedback}<br>
-                <strong>Top Users:</strong><br>
-            `;
-            data.leaderboard.forEach(entry => {
-                html += `${entry.username}: ${entry.points}<br>`;
-            });
-            document.getElementById('submissionResult').innerHTML = html;
-        }
-    });
-}
-</script>
+<script src="/public/js/container/aiReview.js"></script>
+<script src="/public/js/page/game.js"></script>
+<link rel="stylesheet" href="/public/css/container/aiReview.css">
 
 </body>
 </html>
