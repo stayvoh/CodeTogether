@@ -333,6 +333,61 @@ class UserDAO
         return $users;
     }
 
+    public function updateStreakInfo(int $userId, int $currentStreak, int $longestStreak, string $lastSubmissionDate): bool
+    {
+        $conn = Database::getConnection();
+        $stmt = $conn->prepare("UPDATE user SET current_streak = ?, longest_streak = ?, last_submission_date = ? WHERE user_id = ?");
+        $stmt->bind_param("iisi", $currentStreak, $longestStreak, $lastSubmissionDate, $userId);
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+    }
+
+    public function getUserStreakInfo(int $userId): array
+    {
+        $conn = Database::getConnection();
+        $stmt = $conn->prepare("SELECT current_streak, longest_streak, last_submission_date FROM user WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        
+        if (!$result) {
+            return [
+                'current_streak' => 0,
+                'longest_streak' => 0,
+                'last_submission_date' => null
+            ];
+        }
+        
+        return [
+            'current_streak' => $result['current_streak'] ?? 0,
+            'longest_streak' => $result['longest_streak'] ?? 0,
+            'last_submission_date' => $result['last_submission_date']
+        ];
+    }
+
+    public function getTopUsersByStreak(int $limit = 5): array
+    {
+        $conn = Database::getConnection();
+        $stmt = $conn->prepare("SELECT * FROM user ORDER BY current_streak DESC, longest_streak DESC LIMIT ?");
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $users = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $user = new User();
+            $user->load($row);
+            $users[] = $user;
+        }
+
+        $stmt->close();
+
+        return $users;
+    }
+
 
 
 }

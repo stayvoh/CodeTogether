@@ -1,9 +1,1 @@
-{
-    "date": "2025-12-08",
-    "problem": {
-        "title": "Double each number in an array",
-        "description": "Write a function named doubleNumbers(arr) that takes an array of numbers and returns a new array with every element multiplied by 2. Do not modify the original array. Assume all elements are numbers. For example, if the input is [1, 2, 3], the output should be [2, 4, 6].",
-        "exampleInput": "[1, 2, 3, 4, 5]",
-        "exampleOutput": "[2, 4, 6, 8, 10]"
-    }
-}
+{"date":"2025-12-09","problem":{"title":"Sum of Even Numbers in an Array","description":"Create a function that receives an array of integers and returns the sum of all even numbers in the array. The function should handle empty arrays and negative numbers.","exampleInput":"const numbers = [1, 2, 3, 4, 5, 6];","exampleOutput":"12"}}

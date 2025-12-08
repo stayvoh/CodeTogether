@@ -9,7 +9,7 @@ if (!$apiKey) {
 
 // File to store today's problem
 $filename = __DIR__ . '/dailyProblem.json';
-$today = date('Y-m-d');
+$today = '2025-12-09'; // date('Y-m-d') - Default
 
 // Check if file exists and is from today
 if (file_exists($filename)) {

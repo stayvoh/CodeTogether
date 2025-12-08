@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 session_start();
 require_once __DIR__ . '/dao/UserDAO.php';
+require_once __DIR__ . '/dao/DailySubmissionDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
@@ -14,6 +15,23 @@ if (!$input || !isset($input['code'], $input['language'], $input['problem'])) {
     exit;
 }
 
+// Handle streak-only check
+if (isset($input['checkStreakOnly']) && $input['checkStreakOnly']) {
+    $user = $_SESSION['usercreds']['username'] ?? 'guest';
+    if ($user !== 'guest') {
+        $userDAO = new UserDAO();
+        $userObj = $userDAO->getUserByName($user);
+        if ($userObj) {
+            $dailySubmissionDAO = new DailySubmissionDAO();
+            $streakInfo = $dailySubmissionDAO->getUserStreak($userObj->getUserID());
+            echo json_encode(['streak' => $streakInfo]);
+            exit;
+        }
+    }
+    echo json_encode(['streak' => ['current' => 0, 'longest' => 0]]);
+    exit;
+}
+
 $user = $_SESSION['usercreds']['username'] ?? 'guest';
 $code = $input['code'];
 $language = $input['language'];
@@ -21,6 +39,33 @@ $problem = $input['problem'];
 
 if (!$problem) {
     echo json_encode(['error' => 'Problem data invalid']);
+    exit;
+}
+
+// Get user object
+$userDAO = new UserDAO();
+$userObj = $userDAO->getUserByName($user);
+if (!$userObj) {
+    echo json_encode(['error' => 'User not found']);
+    exit;
+}
+
+// Check if user already submitted today for this problem
+$dailySubmissionDAO = new DailySubmissionDAO();
+if ($dailySubmissionDAO->hasSubmittedToday($userObj->getUserID(), $problem['title'])) {
+    // Get user's current streak info
+    $streakInfo = $dailySubmissionDAO->getUserStreak($userObj->getUserID());
+    
+    echo json_encode([
+        'error' => 'You have already submitted a solution for today\'s problem. Try again tomorrow!',
+        'alreadySubmitted' => true,
+        'streak' => [
+            'current' => $streakInfo['current'],
+            'longest' => $streakInfo['longest'],
+            'isNewRecord' => false,
+            'milestone' => false
+        ]
+    ]);
     exit;
 }
 
@@ -84,11 +129,26 @@ if (!$judgement) {
 }
 
 // Update user points in database
-$userDAO = new UserDAO();
-$userObj = $userDAO->getUserByName($user);
+$score = $judgement['score'] ?? 0;
 if ($userObj) {
-    $score = $judgement['score'] ?? 0;
     $userDAO->addPoints($userObj->getUserID(), $score);
+    
+    // Record the submission and update streak
+    $streakData = $dailySubmissionDAO->recordSubmission(
+        $userObj->getUserID(),
+        $problem['title'],
+        $score,
+        $judgement['correct'] ?? false,
+        $code,
+        $language
+    );
+} else {
+    $streakData = [
+        'current' => 0,
+        'longest' => 0,
+        'isNewRecord' => false,
+        'milestone' => false
+    ];
 }
 
 // Get top users from database
@@ -101,11 +161,16 @@ foreach ($topUsers as $topUser) {
     ];
 }
 
-// Return result + top 3
+// Return result + top 3 + streak info
 echo json_encode([
     'score' => $judgement['score'] ?? 0,
     'correct' => $judgement['correct'] ?? false,
     'feedback' => $judgement['feedback'] ?? 'No feedback provided',
-    'leaderboard' => array_slice($leaderboard, 0, 3, true)
+    'leaderboard' => array_slice($leaderboard, 0, 3, true),
+    'streak' => $streakData,
+    'submission' => [
+        'alreadySubmitted' => false,
+        'canSubmit' => true
+    ]
 ]);
 ?>

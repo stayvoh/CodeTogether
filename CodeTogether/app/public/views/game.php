@@ -26,6 +26,20 @@
 <main class="page-game">
 <div class="container-fluid container-lg py-5">
 
+    <!-- STREAK DISPLAY -->
+    <div class="streak-box mb-3">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 text-center">
+                <div class="streak-display">
+                    <i class="fa-solid fa-fire text-orange-500"></i>
+                    <span class="streak-number" id="currentStreak">0</span>
+                    <span class="streak-label">day streak!</span>
+                    <span class="streak-best ms-3">Best: <span id="longestStreak">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- DAILY CHALLENGE BOX -->
     <div class="challenge-box mb-4">
         <div class="row justify-content-center">
@@ -53,12 +67,13 @@
             <div id="editor" style="height: 500px; border-radius: 8px; overflow: hidden;"></div>
 
             <div class="text-center mt-3">
-                <button class="btn btn-success btn-lg px-5" onclick="submitCode()">
+                <button id="submitBtn" class="btn btn-success btn-lg px-5" onclick="submitCode()">
                     <i class="fa-solid fa-paper-plane"></i> Submit Solution
                 </button>
             </div>
 
             <div id="submissionResult" class="mt-3 text-center"></div>
+            <div id="streakMilestone" class="mt-3 text-center d-none"></div>
         </div>
     </div>
 
@@ -79,6 +94,7 @@ require.config({
 
 let editor;
 let currentProblem = {};
+let hasSubmittedToday = false;
 
 require(["vs/editor/editor.main"], function () {
     editor = monaco.editor.create(document.getElementById("editor"), {
@@ -96,6 +112,7 @@ require(["vs/editor/editor.main"], function () {
     });
 
     fetchProblem();
+    fetchUserStreak();
 });
 
 function fetchProblem() {
@@ -114,7 +131,63 @@ function fetchProblem() {
         });
 }
 
+function fetchUserStreak() {
+    fetch('submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            code: '',
+            language: '',
+            problem: { title: '', description: '' },
+            checkStreakOnly: true
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.streak) {
+            updateStreakDisplay(data.streak);
+        }
+    })
+    .catch(err => {
+        console.error('Error fetching streak:', err);
+    });
+}
+
+function updateStreakDisplay(streakData) {
+    document.getElementById('currentStreak').textContent = streakData.current;
+    document.getElementById('longestStreak').textContent = streakData.longest;
+    
+    if (streakData.milestone) {
+        showStreakMilestone(streakData.current);
+    }
+}
+
+function showStreakMilestone(streak) {
+    const milestoneDiv = document.getElementById('streakMilestone');
+    milestoneDiv.innerHTML = `
+        <div class="alert alert-warning">
+            <i class="fa-solid fa-trophy"></i> 
+            <strong>Milestone!</strong> ${streak} day streak! Keep it up!
+        </div>
+    `;
+    milestoneDiv.classList.remove('d-none');
+    
+    setTimeout(() => {
+        milestoneDiv.classList.add('d-none');
+    }, 5000);
+}
+
 function submitCode() {
+    if (hasSubmittedToday) {
+        document.getElementById('submissionResult').innerHTML = 
+            '<span class="text-warning">You have already submitted today. Come back tomorrow for a new challenge!</span>';
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
     fetch('submit.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -128,19 +201,55 @@ function submitCode() {
     .then(data => {
         if (data.error) {
             document.getElementById('submissionResult').innerHTML = `<span class="text-danger">${data.error}</span>`;
+            
+            if (data.alreadySubmitted) {
+                hasSubmittedToday = true;
+                updateSubmitButton();
+            }
         } else {
+            hasSubmittedToday = true;
+            updateSubmitButton();
+            
+            // Update streak display
+            if (data.streak) {
+                updateStreakDisplay(data.streak);
+            }
+            
             let html = `
-                <strong>Score:</strong> ${data.score}<br>
-                <strong>Correct:</strong> ${data.correct}<br>
-                <strong>Feedback:</strong> ${data.feedback}<br>
-                <strong>Top Users:</strong><br>
+                <div class="alert alert-success">
+                    <strong>Score:</strong> ${data.score}<br>
+                    <strong>Correct:</strong> ${data.correct ? '✅ Yes' : '❌ No'}<br>
+                    <strong>Feedback:</strong> ${data.feedback}
+                </div>
+                <div class="mt-2">
+                    <strong>Top Users:</strong><br>
             `;
             data.leaderboard.forEach(entry => {
                 html += `${entry.username}: ${entry.points}<br>`;
             });
+            html += '</div>';
             document.getElementById('submissionResult').innerHTML = html;
         }
+    })
+    .catch(err => {
+        console.error('Submission error:', err);
+        document.getElementById('submissionResult').innerHTML = 
+            '<span class="text-danger">Error submitting solution. Please try again.</span>';
+    })
+    .finally(() => {
+        if (!hasSubmittedToday) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Solution';
+        }
     });
+}
+
+function updateSubmitButton() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Submitted Today';
+    submitBtn.classList.remove('btn-success');
+    submitBtn.classList.add('btn-secondary');
 }
 </script>
 
