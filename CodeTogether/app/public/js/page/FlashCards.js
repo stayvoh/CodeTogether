@@ -12,20 +12,33 @@ const totalMatchesElement = document.getElementById('total-matches');
 const gameOverModal = document.getElementById('game-over-modal');
 const progressBar = document.getElementById('progress-bar'); // NEW
 const progressText = document.getElementById('progress-text'); // NEW
-const urlParams = new URLSearchParams(window.location.search);
-const setName = urlParams.get('set') || 'default';
-const mainTitle = document.getElementById('main-title');
-if (mainTitle) {
-    let displayName = setName;
 
-    // If it's a user set, remove "user/" prefix
-    if (setName.startsWith('user/')) {
-        displayName = setName.slice(5); // remove first 5 characters
+// --- Set name & title formatting ---
+const urlParams = new URLSearchParams(window.location.search);
+const rawSetParam = urlParams.get('set') || 'default';
+
+// This is the value we actually send to the backend (keep full string, e.g. "user/test_deck_1")
+const setName = rawSetParam;
+
+// Helper to turn "user/test_deck_1" -> "Test Deck 1"
+function formatDeckName(raw) {
+    if (!raw || raw === 'default') {
+        return 'System';
     }
 
-    // Capitalize the first letter
-    const formattedSet = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-    mainTitle.textContent = `${formattedSet} Terminology: Match`;
+    // Drop "user/" prefix if present
+    const base = raw.split('/').pop();
+
+    // Replace underscores/dashes with spaces and capitalize each word
+    return base
+        .replace(/[_-]+/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const mainTitle = document.getElementById('main-title');
+if (mainTitle) {
+    const displayName = formatDeckName(rawSetParam);
+    mainTitle.textContent = `${displayName} Terminology: Match`;
 }
 
 
@@ -91,7 +104,6 @@ window.addEventListener('dragover', (e) => {
 
 // Ensure scrolling stops when drag operation ends or is cancelled
 window.addEventListener('dragend', stopAutoScrolling);
-
 
 
 // Utility to shuffle an array (Fisher-Yates)
@@ -166,7 +178,6 @@ function handleDrop(e) {
                         </div>
                         `;
 
-
         droppedElement.style.cursor = 'default';
 
         // 2. Remove the term card
@@ -225,7 +236,7 @@ function renderDefinitions(definitions) {
 // --- Game Flow Functions ---
 
 async function startGame() {
-      
+
     // Reset state
     score = 0;
     scoreElement.textContent = 0;
@@ -237,7 +248,7 @@ async function startGame() {
         });
         console.log('Fetch response status:', response.status);
         const data = await response.json();
-        console.log('Data returned from server:', data);  
+        console.log('Data returned from server:', data);
         currentCards = data;
         console.log('currentCards array length:', currentCards.length);
         console.log('currentCards contents:', currentCards);
@@ -283,15 +294,15 @@ function endGame() {
         },
         body: JSON.stringify({ points: score })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log(`${score} points added successfully!`);
-        } else {
-            console.warn('Failed to update score:', data.error || data);
-        }
-    })
-    .catch(error => console.error('Error updating score:', error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`${score} points added successfully!`);
+            } else {
+                console.warn('Failed to update score:', data.error || data);
+            }
+        })
+        .catch(error => console.error('Error updating score:', error));
 }
 
 
