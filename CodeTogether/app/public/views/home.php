@@ -96,6 +96,33 @@
                     </div>
 
                     <!--end of the about me box-->
+
+                <?php
+                    // Profile song display on home page
+                    $musicFile   = $data['user']->getProfileMusic();
+                    $musicFsPath = $musicFile ? (__DIR__ . '/../uploads/' . $musicFile) : null;
+                    $musicWebPath = $musicFile ? ('/public/uploads/' . rawurlencode((string)$musicFile)) : null;
+                    ?>
+
+                    <div class="profile-card mb-4 mt-3 p-3">
+                        <h4 class="text-info mb-3">Profile Song</h4>
+
+                        <?php if (!empty($musicFile) && $musicFsPath && file_exists($musicFsPath)): ?>
+                            <audio controls class="w-100 mb-2">
+                                <source src="<?= htmlspecialchars($musicWebPath, ENT_QUOTES, 'UTF-8') ?>" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        <?php else: ?>
+                            <p class="text-muted mb-0">No profile song set yet.</p>
+                        <?php endif; ?>
+
+                        <a href="index.php?action=profile&user_id=<?= $data['user']->getUserID(); ?>"
+                        class="btn btn-sm btn-outline-info rounded-pill w-100 mt-2">
+                            Edit Profile Song
+                        </a>
+                    </div>
+
+
                 </div>
                 <!--end of left column-->
 

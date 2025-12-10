@@ -1,0 +1,17 @@
+[
+  { "id": 1, "term": "CPU", "definition": "The central processing unit that executes instructions of a computer program." },
+  { "id": 2, "term": "ALU", "definition": "The arithmetic logic unit that performs mathematical and logical operations." },
+  { "id": 3, "term": "Register", "definition": "A small high-speed memory location inside the CPU used to store immediate values." },
+  { "id": 4, "term": "Cache", "definition": "Small, fast memory located close to the CPU used to speed up data access." },
+  { "id": 5, "term": "RAM", "definition": "Volatile memory used to store data and programs currently in use." },
+  { "id": 6, "term": "ROM", "definition": "Non-volatile memory that stores firmware and cannot be easily altered." },
+  { "id": 7, "term": "Motherboard", "definition": "The main circuit board that connects and allows communication between hardware components." },
+  { "id": 8, "term": "Bus", "definition": "A communication system that transfers data between components inside a computer." },
+  { "id": 9, "term": "Clock Speed", "definition": "The rate at which a CPU executes instructions, measured in GHz." },
+  { "id": 10, "term": "I/O Device", "definition": "A device that allows a computer to interact with the outside world (keyboard, monitor, etc.)." },
+  { "id": 11, "term": "GPU", "definition": "A processor designed for graphics rendering and parallel computation." },
+  { "id": 12, "term": "ASIC", "definition": "A custom hardware chip built for a specific application." },
+  { "id": 13, "term": "Pipeline", "definition": "A CPU design technique allowing overlapping execution of instructions." },
+  { "id": 14, "term": "Firmware", "definition": "Low-level software stored in ROM that provides hardware control functions." },
+  { "id": 15, "term": "Machine Cycle", "definition": "The basic steps (fetch, decode, execute) executed by the CPU for each instruction." }
+]

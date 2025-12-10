@@ -16,6 +16,7 @@ class User implements JsonSerializable
     private ?DateTime $latestUpdate;
     private string $password;
     private int $requestInitiatorID;
+    private ?string $profileMusic = null;
 
     public function __construct(int $userID = -1, int $roleID = -1, string $username = '', int $points = -1, string $status = '', string $email = '', string $password = '', bool $isDeleted = false, ?DateTime $createdOn = null, ?DateTime $latestUpdate = null, int $requestInitiatorID = -1, string $aboutMe = '', string $profilePicture = '')
     {
@@ -48,6 +49,9 @@ class User implements JsonSerializable
         $this->password = $row['password'];
         $this->aboutMe = $row['about_me'];
         $this->profilePicture = $row['profile_picture'];
+        if (array_key_exists('profile_music', $row)) {
+            $this->profileMusic = $row['profile_music'];
+        }
     }
 
     public function jsonSerialize(): array
@@ -197,5 +201,15 @@ class User implements JsonSerializable
     {
         return $this->profilePicture;
     }
+
+    public function getProfileMusic(): ?string {
+        return $this->profileMusic;
+    }
+
+    public function setProfileMusic(?string $m): void {
+        $this->profileMusic = $m;
+    }
+
+
 }
 ?>
